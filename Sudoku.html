@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sudoku Quiz</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .question, .name-entry {
+            display: none;
+        }
+        .question.active, .name-entry.active {
+            display: block;
+        }
+        .name-container {
+            text-align: center;
+            margin: 50px auto;
+            max-width: 500px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .name-container h1 {
+            color: #3e4a61;
+        }
+        .name-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .name-container button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3e4a61;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .name-container button:hover {
+            background-color: #2f374c;
+        }
+    </style> 
+    
+</head>
+<div class="page-wrapper">
+
+    <header class="header">
+        <div class="logo">
+            <img src="useklogo.png" alt="Logo"  width="60" height="60">
+        </div>
+        <nav class="nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="CVcsc331.html">CV</a></li>
+                <li><a href="sched.html">Schedule</a></li>
+                <li><a href="Sudoku.html" id="active">Sudoku Quiz</a></li>
+                <li><a href="contactUs.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <body class="sudoku-page">
+    <div align="center">
+        <div id="nameEntry" class="name-entry active">
+            <div class="name-container">
+                <h1>Welcome to the Sudoku Quiz!</h1>
+                <p>Please enter your name to begin:</p>
+                <input type="text" id="playerName" placeholder="Your Name" required>
+                <button onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+        
+        <div id="q1" class="question">
+            <h1>Easy</h1>
+            <img src="easy.png" alt="" width="400" height="400" > 
+            <h3>What number fits in the tab 3 I?</h3>
+            <input type="number" min="1" max="9" id="Es">
+        </div>
+
+        <div id="q2" class="question">
+            <h1>Medium</h1>
+            <img src="medium.png" alt="" width="400" height="400">
+            <h3>What number fits in the tab 7 B?</h3>
+            <input type="number" min="1" max="9" id="Md">
+        </div>
+
+        <div id="q3" class="question">
+            <h1>Hard</h1>
+            <img src="hard.png" alt="" width="400" height="400">
+            <h3>What number fits in the tab 4 C?</h3>
+            <input type="number" min="1" max="9" id="Hd">
+        </div>
+
+        <div id="q4" class="question">
+            <h1>Expert</h1>
+            <img src="extreme.png" alt="" width="400" height="400">
+            <h3>What number fits in the tab 4 D?</h3>
+            <input type="number" min="1" max="9" id="Ex">
+        </div>
+
+        <br>
+        <button id="nextButton" style="display: none;" class="btnquizz" onclick="nextQuestion()">Next</button>
+        <h2 id="scoreDisplay" style="display: none;">Score: 0</h2>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let playerName = "";
+
+        // Correct answers
+        const correctAnswers = {
+          Es: 8, 
+          Md:3,
+          Hd:9,
+          Ex: 1
+        };
+        
+        
+        function startQuiz() {
+            playerName = document.getElementById("playerName").value.trim();
+            
+            if (!playerName) {
+                alert("Please enter your name to continue.");
+                return;
+            }
+            
+            
+            document.getElementById("nameEntry").classList.remove("active");
+            document.getElementById("nextButton").style.display = "block";
+            document.getElementById("scoreDisplay").style.display = "block";
+            
+            
+            currentQuestion = 1;
+            document.getElementById("q1").classList.add("active");
+        }
+
+        function nextQuestion() {
+            if (currentQuestion <= 4) {
+                let inputId = ['Es', 'Md', 'Hd', 'Ex'][currentQuestion - 1];
+                
+                checkAnswer(inputId);
+        
+                const currentDiv = document.getElementById(`q${currentQuestion}`);
+                currentDiv.classList.remove('active');
+        
+                currentQuestion++;
+        
+                
+                if (currentQuestion <= 4) {
+                    const nextDiv = document.getElementById(`q${currentQuestion}`);
+                    nextDiv.classList.add('active');
+                } else {
+                    
+                    finishQuiz();
+                }
+        
+                document.getElementById("scoreDisplay").innerText = `Score: ${score}`;
+            }
+        }
+
+        function checkAnswer(inputId) {
+            const userInput = document.getElementById(inputId).value;
+            const correct = correctAnswers[inputId];
+        
+            if (parseInt(userInput) === correct) {
+                score++;
+            }
+        }
+        
+        function finishQuiz() {
+            document.getElementById("nextButton").style.display = "none";
+            
+            let message = `${playerName}, your quiz is finished!\n\nYour final score is: ${score} out of 4`;
+            
+            if (score === 4) {
+                message += "\n\nPerfect score! You're a Sudoku master!";
+            } else if (score >= 2) {
+                message += "\n\nGood job! ";
+            }
+             else if (score === 1) {
+                message += "\n\nNice try but please Improve!!.";
+            }  else {
+                message += "\n\nDo you know how to play this game ??";
+            }
+            
+            alert(message);
+            
+            const resultsDiv = document.createElement('div');
+            resultsDiv.className = 'name-container';
+            resultsDiv.innerHTML = `
+                <h1>Quiz Results</h1>
+                <h2>${playerName}</h2>
+                <p>Your final score is: ${score} out of 4</p>
+                ${getScoreMessage(score)}
+                <button onclick="location.reload()">Try Again</button>
+            `;
+            
+            const container = document.querySelector('.sudoku-page div[align="center"]');
+            container.innerHTML = '';
+            container.appendChild(resultsDiv);
+            
+            
+        }
+        
+        function getScoreMessage(score) {
+            if (score === 4) {
+                return "<p>Perfect score! You're a Sudoku master!</p>";
+            } else if (score >= 2) {
+                return "<p>Good job! Keep practicing to improve your Sudoku skills.</p>";
+            } else {
+                return "<p>Keep practicing! Sudoku skills improve with practice.</p>";
+            }
+        }
+        
+        
+    </script>
+
+</body>
+
+</div>
+<footer>
+    <div class="footer-content">
+      <p>&copy; 2025 Peter Asaad Abou Jawdeh. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="mailto:peterabj28@gmail.com"><i class="fa-solid fa-envelope"></i></a> 
+        <a href="https://github.com/yourusername" target="_blank"><i class="fab fa-github" ></i></a> 
+        <a href="https://linkedin.com/in/yourusername" target="_blank"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </footer>
+</html>
